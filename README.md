@@ -48,7 +48,7 @@ This project is a simple API test automation using Python, pytest, and Allure re
 2. Open the test file `test_api.py`.
 3. Right-click inside the test file and select `Run 'pytest in test_api'`.
 
-### Running Tests through Command Prompt with simple HTML Report
+### Running Tests using Command Prompt (Simple HTML Report)
 
 1. Open the command prompt.
 2. Navigate to the project directory.
@@ -60,7 +60,9 @@ Note: Need to install pytest-html using the command
 Before running
 - pytest ./test/test_api.py --html=report.html
 
-### Running Tests with Command Prompt with Allure HTML Report
+Check the result in the project folder with a file name of "report.html"
+
+### Running Tests using Command Prompt (Allure HTML Report)
 
 ### Allure Command Line Installation
 
