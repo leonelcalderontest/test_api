@@ -12,60 +12,63 @@ This project is a simple API test automation using Python, pytest, and Allure re
 
 ### Pytest Installation
 
-```bash
-pip install pytest
+- pip install pytest
 
-## Allure Command Line Installation
-# For Windows:
+### Allure Command Line Installation
 
-scoop install allure
+- For Windows:
+- scoop install allure
 
-or
+- or
 
-choco install allure.commandline
+- choco install allure.commandline
 
-# For Mac:
+- For Mac:
 
-brew install allure
+- brew install allure
 
-# For Linux:
+- For Linux:
 
-sudo apt-add-repository ppa:qameta/allure
-sudo apt-get update 
-sudo apt-get install allure
+- sudo apt-add-repository ppa:qameta/allure
+- sudo apt-get update
+- sudo apt-get install allure
 
-or
+- or
 
-curl -o allure-2.15.0.tgz -Ls https://dl.bintray.com/qameta/generic/io/qameta/allure/allure/2.15.0/allure-2.15.0.tgz && \
-tar -zxvf allure-2.15.0.tgz -C /opt/ && \
-ln -s /opt/allure-2.15.0/bin/allure /usr/bin/allure
-brew install allure
+- curl -o allure-2.15.0.tgz -Ls https://dl.bintray.com/qameta/generic/io/qameta/allure/allure/2.15.0/allure-2.15.0.tgz &&
+- tar -zxvf allure-2.15.0.tgz -C /opt/ &&
+- ln -s /opt/allure-2.15.0/bin/allure /usr/bin/allure
 
-### Running Tests
-## Running Tests through PyCharm IDE
-Open the project in PyCharm.
-Open the test file test_api.py.
-Right-click inside the test file and select Run 'pytest in test_api'.
 
-## Running Tests through Command Prompt
-Open the command prompt.
-Navigate to the project directory.
-Run the following command:
+## Running Tests
 
-pytest ./test/test_api.py --html=report.html
+### Running Tests through PyCharm IDE
 
-## Running Tests with Allure Report through Command Prompt
-Open the command prompt.
-Navigate to the project directory.
-Run the following commands:
+1. Open the project in PyCharm.
+2. Open the test file `test_api.py`.
+3. Right-click inside the test file and select `Run 'pytest in test_api'`.
 
-allure serve allure-results --clean --silent
-pytest ./test/test_api.py --alluredir=allure-results
-allure generate allure-results -o html_allure_local_result --clean
-allure report open -o html_allure_local_result
+### Running Tests through Command Prompt
 
+1. Open the command prompt.
+2. Navigate to the project directory.
+3. Run the following command:
+
+- pytest ./test/test_api.py --html=report.html
+
+### Running Tests with Allure Report through Command Prompt
+
+1. Open the command prompt.
+2. Navigate to the project directory.
+3. Run the following commands:
+
+- allure serve allure-results --clean --silent
+- pytest ./test/test_api.py --alluredir=allure-results
+- allure generate allure-results -o html_allure_local_result --clean
+- allure report open -o html_allure_local_result
 
 ## Author
+
 Leonel Calderon
 
 ## Contributing
