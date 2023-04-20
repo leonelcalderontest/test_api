@@ -4,6 +4,12 @@
 
 This project is a simple API test automation using Python, pytest, and Allure report. 
 
+## Sample Result
+<img src="https://github.com/leonelcalderontest/test_api/blob/main/screenshot_home_page_result_1.PNG" alt="HTML Homepage">
+<img src="https://github.com/leonelcalderontest/test_api/blob/main/screenshot_test_suite_overview_result_2.PNG" alt="Test Suite -> Test Case 1 Overview">
+<img src="https://github.com/leonelcalderontest/test_api/blob/main/screenshot_test_body_result_3.PNG" alt="Sample Logs on HTML Report">
+<img src="https://github.com/leonelcalderontest/test_api/blob/main/screenshot_test_suite_overview_result_4.PNG">
+
 ## Requirements
 
 - Python 3.9
