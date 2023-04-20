@@ -60,6 +60,10 @@ or
 2. Navigate to the project directory.
 3. Run the following command:
 
+Note: Need to install pytest-html using the command 
+- pip install pytest-html
+
+Before running
 - pytest ./test/test_api.py --html=report.html
 
 ### Running Tests with Allure Report through Command Prompt
