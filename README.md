@@ -15,72 +15,62 @@ This project is a simple API test automation using Python, pytest, and Allure re
 ```bash
 pip install pytest
 
-Allure Command Line Installation
-For Windows:
+## Allure Command Line Installation
+# For Windows:
 
-bash
-Copy code
 scoop install allure
+
 or
 
-bash
-Copy code
 choco install allure.commandline
-For Mac:
 
-bash
-Copy code
+# For Mac:
+
 brew install allure
-For Linux:
 
-bash
-Copy code
+# For Linux:
+
 sudo apt-add-repository ppa:qameta/allure
 sudo apt-get update 
 sudo apt-get install allure
+
 or
 
-bash
-Copy code
 curl -o allure-2.15.0.tgz -Ls https://dl.bintray.com/qameta/generic/io/qameta/allure/allure/2.15.0/allure-2.15.0.tgz && \
 tar -zxvf allure-2.15.0.tgz -C /opt/ && \
 ln -s /opt/allure-2.15.0/bin/allure /usr/bin/allure
 brew install allure
 
-Running Tests
-Running Tests through PyCharm IDE
+### Running Tests
+## Running Tests through PyCharm IDE
 Open the project in PyCharm.
 Open the test file test_api.py.
 Right-click inside the test file and select Run 'pytest in test_api'.
-Running Tests through Command Prompt
+
+## Running Tests through Command Prompt
 Open the command prompt.
-
 Navigate to the project directory.
-
 Run the following command:
 
-bash
-Copy code
 pytest ./test/test_api.py --html=report.html
-Running Tests with Allure Report through Command Prompt
+
+## Running Tests with Allure Report through Command Prompt
 Open the command prompt.
-
 Navigate to the project directory.
-
 Run the following commands:
 
-bash
-Copy code
 allure serve allure-results --clean --silent
 pytest ./test/test_api.py --alluredir=allure-results
 allure generate allure-results -o html_allure_local_result --clean
 allure report open -o html_allure_local_result
-Author
+
+
+## Author
 Leonel Calderon
 
-Contributing
+## Contributing
 
 
-License
+## License
 
 
