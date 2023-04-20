@@ -57,8 +57,13 @@ class json_validation:
                     if arrayfieldname_check in element and element[arrayfieldname_check] == arrayfieldvalue_check:
                         if arrayfieldname_val in element and element[arrayfieldname_val] != arrayfieldvalue_val:
                             isPassed = False
+                            print("Expected: " + arrayfieldvalue_val + " - Actual: " + element[arrayfieldname_val])
                             print(f"Validation failed for {arrayfieldname_val}")
                             break
+                        else:
+                            print("Expected: " + arrayfieldvalue_val + " - Actual: " + element[arrayfieldname_val])
+
+
             else:
                 isPassed = False
                 print(f"{field} field in JSON object is not a list")
