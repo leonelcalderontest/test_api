@@ -79,11 +79,11 @@ This command will append the path to the Allure executable to the existing PATH 
 5. Close and reopen the command prompt window to ensure that the changes take effect.
 6. Run the allure command to confirm that it is now recognized by the command prompt.
 
-For Mac:
+##### For Mac:
 
 - brew install allure
 
-For Linux:
+##### For Linux:
 
 - sudo apt-add-repository ppa:qameta/allure
 - sudo apt-get update
