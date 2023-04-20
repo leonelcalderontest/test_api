@@ -1,0 +1,123 @@
+[32mINFO    [0m Logger:test_api.py:45 RESPONSE BODY IS :
+[32mINFO    [0m Logger:test_api.py:46 {
+    "CategoryId": 6329,
+    "Name": "Home & garden",
+    "Path": "/Books/Magazines/Home-garden",
+    "CanListAuctions": true,
+    "CanListClassifieds": false,
+    "CanRelist": true,
+    "DefaultDuration": 7,
+    "AllowedDurations": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        10
+    ],
+    "Fees": {
+        "Bundle": 0.95,
+        "EndDate": 0.25,
+        "Feature": 0.75,
+        "Gallery": 0.25,
+        "Reserve": 0.25,
+        "Subtitle": 0.15,
+        "TenDays": 0.25,
+        "Withdrawal": 3.0,
+        "HighVolume": 0.1,
+        "MaximumSuccessFee": 499.0,
+        "SuccessFeeTiers": [
+            {
+                "MinimumTierPrice": 0
+            },
+            {
+                "MinimumTierPrice": 1,
+                "PercentageFee": 9.9
+            }
+        ],
+        "SecondCategory": 0.99
+    },
+    "FreePhotoCount": 20,
+    "MaximumPhotoCount": 20,
+    "Charities": [
+        {
+            "CharityType": 1,
+            "ImageSource": "https://www.tmsandbox.co.nz/images/sell/charities/SaveTheKiwi-light.png",
+            "DarkModeImageSource": "https://www.tmsandbox.co.nz/images/sell/charities/SaveTheKiwi-dark.png",
+            "Description": "Save the Kiwi",
+            "Tagline": "Protecting kiwi and the places they live."
+        },
+        {
+            "CharityType": 2,
+            "ImageSource": "https://www.tmsandbox.co.nz/images/sell/charities/Plunket-light.png",
+            "DarkModeImageSource": "https://www.tmsandbox.co.nz/images/sell/charities/Plunket-dark.png",
+            "Description": "Plunket",
+            "Tagline": "A major provider of well child health services in NZ."
+        },
+        {
+            "CharityType": 3,
+            "ImageSource": "https://www.tmsandbox.co.nz/images/sell/st_john_logo_light.png",
+            "DarkModeImageSource": "https://www.tmsandbox.co.nz/images/sell/st_john_logo_dark.png",
+            "Description": "St John",
+            "Tagline": "To support St John in the work they do in our community."
+        },
+        {
+            "CharityType": 4,
+            "ImageSource": "https://www.tmsandbox.co.nz/images/sell/chch_foundation_light.png",
+            "DarkModeImageSource": "https://www.tmsandbox.co.nz/images/sell/chch_foundation_dark.png",
+            "Description": "Our People, Our City Fund",
+            "Tagline": "This will be used to support the families and Muslim communities impacted by the tragic events in Christchurch."
+        }
+    ],
+    "Promotions": [
+        {
+            "Id": 1,
+            "Name": "Basic",
+            "Description": "Lowest position in category",
+            "Price": 0.0,
+            "MinimumPhotoCount": 0
+        },
+        {
+            "Id": 2,
+            "Name": "Gallery",
+            "Description": "Good position in category",
+            "Price": 0.25,
+            "OriginalPrice": 0.25,
+            "MinimumPhotoCount": 0,
+            "GoodFor2RelistsFee": 0.15
+        },
+        {
+            "Id": 3,
+            "Name": "Feature",
+            "Description": "Better position in category",
+            "Price": 0.75,
+            "OriginalPrice": 0.75,
+            "Recommended": true,
+            "MinimumPhotoCount": 0,
+            "GoodFor2RelistsFee": 0.35
+        },
+        {
+            "Id": 4,
+            "Name": "Feature Combo",
+            "Description": "Best position in category \nIncludes benefits of Feature \nHighlights listing in search results",
+            "Price": 0.95,
+            "OriginalPrice": 0.95,
+            "MinimumPhotoCount": 0,
+            "GoodFor2RelistsFee": 0.45
+        }
+    ],
+    "EmbeddedContentOptions": [],
+    "MaximumTitleLength": 80,
+    "AreaOfBusiness": 1,
+    "DefaultRelistDuration": 7,
+    "CanHaveSecondCategory": true,
+    "CanBeSecondCategory": true,
+    "CanUseCounterOffers": true
+}
+[32mINFO    [0m Logger:test_api.py:51 RESPONSE STATUS CODE IS : 
+[32mINFO    [0m Logger:test_api.py:52 200
+[32mINFO    [0m Logger:test_api.py:59 Validation of specific fields
+[32mINFO    [0m Logger:test_api.py:62 Expected Field name and value exist and correct
+[32mINFO    [0m Logger:test_api.py:69 Expected Field name and value exist and correct
+[32mINFO    [0m Logger:test_api.py:76 Expected Field name and value exist and correct
