@@ -72,10 +72,11 @@ Check the result in the project folder with a file name of "report.html"
 2. Extract the downloaded ZIP file to a location on your computer (e.g. C:\Program Files\allure)
 3. Open a command prompt window.
 4. Run the following command to add the Allure executable to the PATH environment variable:
-5. 
+
 - setx PATH "%PATH%;C:\Program Files\allure\bin"
 
 This command will append the path to the Allure executable to the existing PATH environment variable.
+
 5. Close and reopen the command prompt window to ensure that the changes take effect.
 6. Run the allure command to confirm that it is now recognized by the command prompt.
 
