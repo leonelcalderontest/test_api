@@ -6,22 +6,22 @@ This project is a simple API test automation using Python, pytest, and Allure re
 
 ## Sample Result
 
-### Allure HTML Report Home Page
+##### Allure HTML Report Home Page
 <img src="https://github.com/leonelcalderontest/test_api/blob/main/screenshot_home_page_result_1.PNG" alt="HTML Homepage">
 
 
 
-### Allure HTML Report Test Case
+##### Allure HTML Report Test Case
 <img src="https://github.com/leonelcalderontest/test_api/blob/main/screenshot_test_suite_overview_result_2.PNG" alt="Test Suite -> Test Case 1 Overview">
 
 
 
-### Allure HTML Report Sample Logger
+##### Allure HTML Report Sample Logger
 <img src="https://github.com/leonelcalderontest/test_api/blob/main/screenshot_test_body_result_3.PNG" alt="Sample Logs on HTML Report">
 
 
 
-### Allure HTML Report Sample STDOUT
+##### Allure HTML Report Sample STDOUT
 <img src="https://github.com/leonelcalderontest/test_api/blob/main/screenshot_test_suite_overview_result_4.PNG">
 
 ## Requirements
