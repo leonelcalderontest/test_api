@@ -16,24 +16,24 @@ This project is a simple API test automation using Python, pytest, and Allure re
 
 ### Allure Command Line Installation
 
-- For Windows:
+For Windows:
 - scoop install allure
 
-- or
+or
 
 - choco install allure.commandline
 
-- For Mac:
+For Mac:
 
 - brew install allure
 
-- For Linux:
+For Linux:
 
 - sudo apt-add-repository ppa:qameta/allure
 - sudo apt-get update
 - sudo apt-get install allure
 
-- or
+or
 
 - curl -o allure-2.15.0.tgz -Ls https://dl.bintray.com/qameta/generic/io/qameta/allure/allure/2.15.0/allure-2.15.0.tgz &&
 - tar -zxvf allure-2.15.0.tgz -C /opt/ &&
