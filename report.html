@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>report.html</title>
+    <link href="assets/style.css" rel="stylesheet" type="text/css"/></head>
+  <body onLoad="init()">
+    <script>/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+
+function toArray(iter) {
+    if (iter === null) {
+        return null;
+    }
+    return Array.prototype.slice.call(iter);
+}
+
+function find(selector, elem) { // eslint-disable-line no-redeclare
+    if (!elem) {
+        elem = document;
+    }
+    return elem.querySelector(selector);
+}
+
+function findAll(selector, elem) {
+    if (!elem) {
+        elem = document;
+    }
+    return toArray(elem.querySelectorAll(selector));
+}
+
+function sortColumn(elem) {
+    toggleSortStates(elem);
+    const colIndex = toArray(elem.parentNode.childNodes).indexOf(elem);
+    let key;
+    if (elem.classList.contains('result')) {
+        key = keyResult;
+    } else if (elem.classList.contains('links')) {
+        key = keyLink;
+    } else {
+        key = keyAlpha;
+    }
+    sortTable(elem, key(colIndex));
+}
+
+function showAllExtras() { // eslint-disable-line no-unused-vars
+    findAll('.col-result').forEach(showExtras);
+}
+
+function hideAllExtras() { // eslint-disable-line no-unused-vars
+    findAll('.col-result').forEach(hideExtras);
+}
+
+function showExtras(colresultElem) {
+    const extras = colresultElem.parentNode.nextElementSibling;
+    const expandcollapse = colresultElem.firstElementChild;
+    extras.classList.remove('collapsed');
+    expandcollapse.classList.remove('expander');
+    expandcollapse.classList.add('collapser');
+}
+
+function hideExtras(colresultElem) {
+    const extras = colresultElem.parentNode.nextElementSibling;
+    const expandcollapse = colresultElem.firstElementChild;
+    extras.classList.add('collapsed');
+    expandcollapse.classList.remove('collapser');
+    expandcollapse.classList.add('expander');
+}
+
+function showFilters() {
+    let visibleString = getQueryParameter('visible') || 'all';
+    visibleString = visibleString.toLowerCase();
+    const checkedItems = visibleString.split(',');
+
+    const filterItems = document.getElementsByClassName('filter');
+    for (let i = 0; i < filterItems.length; i++) {
+        filterItems[i].hidden = false;
+
+        if (visibleString != 'all') {
+            filterItems[i].checked = checkedItems.includes(filterItems[i].getAttribute('data-test-result'));
+            filterTable(filterItems[i]);
+        }
+    }
+}
+
+function addCollapse() {
+    // Add links for show/hide all
+    const resulttable = find('table#results-table');
+    const showhideall = document.createElement('p');
+    showhideall.innerHTML = '<a href="javascript:showAllExtras()">Show all details</a> / ' +
+                            '<a href="javascript:hideAllExtras()">Hide all details</a>';
+    resulttable.parentElement.insertBefore(showhideall, resulttable);
+
+    // Add show/hide link to each result
+    findAll('.col-result').forEach(function(elem) {
+        const collapsed = getQueryParameter('collapsed') || 'Passed';
+        const extras = elem.parentNode.nextElementSibling;
+        const expandcollapse = document.createElement('span');
+        if (extras.classList.contains('collapsed')) {
+            expandcollapse.classList.add('expander');
+        } else if (collapsed.includes(elem.innerHTML)) {
+            extras.classList.add('collapsed');
+            expandcollapse.classList.add('expander');
+        } else {
+            expandcollapse.classList.add('collapser');
+        }
+        elem.appendChild(expandcollapse);
+
+        elem.addEventListener('click', function(event) {
+            if (event.currentTarget.parentNode.nextElementSibling.classList.contains('collapsed')) {
+                showExtras(event.currentTarget);
+            } else {
+                hideExtras(event.currentTarget);
+            }
+        });
+    });
+}
+
+function getQueryParameter(name) {
+    const match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+}
+
+function init () { // eslint-disable-line no-unused-vars
+    resetSortHeaders();
+
+    addCollapse();
+
+    showFilters();
+
+    sortColumn(find('.initial-sort'));
+
+    findAll('.sortable').forEach(function(elem) {
+        elem.addEventListener('click',
+            function() {
+                sortColumn(elem);
+            }, false);
+    });
+}
+
+function sortTable(clicked, keyFunc) {
+    const rows = findAll('.results-table-row');
+    const reversed = !clicked.classList.contains('asc');
+    const sortedRows = sort(rows, keyFunc, reversed);
+    /* Whole table is removed here because browsers acts much slower
+     * when appending existing elements.
+     */
+    const thead = document.getElementById('results-table-head');
+    document.getElementById('results-table').remove();
+    const parent = document.createElement('table');
+    parent.id = 'results-table';
+    parent.appendChild(thead);
+    sortedRows.forEach(function(elem) {
+        parent.appendChild(elem);
+    });
+    document.getElementsByTagName('BODY')[0].appendChild(parent);
+}
+
+function sort(items, keyFunc, reversed) {
+    const sortArray = items.map(function(item, i) {
+        return [keyFunc(item), i];
+    });
+
+    sortArray.sort(function(a, b) {
+        const keyA = a[0];
+        const keyB = b[0];
+
+        if (keyA == keyB) return 0;
+
+        if (reversed) {
+            return keyA < keyB ? 1 : -1;
+        } else {
+            return keyA > keyB ? 1 : -1;
+        }
+    });
+
+    return sortArray.map(function(item) {
+        const index = item[1];
+        return items[index];
+    });
+}
+
+function keyAlpha(colIndex) {
+    return function(elem) {
+        return elem.childNodes[1].childNodes[colIndex].firstChild.data.toLowerCase();
+    };
+}
+
+function keyLink(colIndex) {
+    return function(elem) {
+        const dataCell = elem.childNodes[1].childNodes[colIndex].firstChild;
+        return dataCell == null ? '' : dataCell.innerText.toLowerCase();
+    };
+}
+
+function keyResult(colIndex) {
+    return function(elem) {
+        const strings = ['Error', 'Failed', 'Rerun', 'XFailed', 'XPassed',
+            'Skipped', 'Passed'];
+        return strings.indexOf(elem.childNodes[1].childNodes[colIndex].firstChild.data);
+    };
+}
+
+function resetSortHeaders() {
+    findAll('.sort-icon').forEach(function(elem) {
+        elem.parentNode.removeChild(elem);
+    });
+    findAll('.sortable').forEach(function(elem) {
+        const icon = document.createElement('div');
+        icon.className = 'sort-icon';
+        icon.textContent = 'vvv';
+        elem.insertBefore(icon, elem.firstChild);
+        elem.classList.remove('desc', 'active');
+        elem.classList.add('asc', 'inactive');
+    });
+}
+
+function toggleSortStates(elem) {
+    //if active, toggle between asc and desc
+    if (elem.classList.contains('active')) {
+        elem.classList.toggle('asc');
+        elem.classList.toggle('desc');
+    }
+
+    //if inactive, reset all other functions and add ascending active
+    if (elem.classList.contains('inactive')) {
+        resetSortHeaders();
+        elem.classList.remove('inactive');
+        elem.classList.add('active');
+    }
+}
+
+function isAllRowsHidden(value) {
+    return value.hidden == false;
+}
+
+function filterTable(elem) { // eslint-disable-line no-unused-vars
+    const outcomeAtt = 'data-test-result';
+    const outcome = elem.getAttribute(outcomeAtt);
+    const classOutcome = outcome + ' results-table-row';
+    const outcomeRows = document.getElementsByClassName(classOutcome);
+
+    for(let i = 0; i < outcomeRows.length; i++){
+        outcomeRows[i].hidden = !elem.checked;
+    }
+
+    const rows = findAll('.results-table-row').filter(isAllRowsHidden);
+    const allRowsHidden = rows.length == 0 ? true : false;
+    const notFoundMessage = document.getElementById('not-found-message');
+    notFoundMessage.hidden = !allRowsHidden;
+}
+</script>
+    <h1>report.html</h1>
+    <p>Report generated on 20-Apr-2023 at 14:38:41 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v3.2.0</p>
+    <h2>Environment</h2>
+    <table id="environment">
+      <tr>
+        <td>Packages</td>
+        <td>{"pluggy": "1.0.0", "pytest": "7.1.3"}</td></tr>
+      <tr>
+        <td>Platform</td>
+        <td>Windows-10-10.0.19041-SP0</td></tr>
+      <tr>
+        <td>Plugins</td>
+        <td>{"allure-pytest": "2.11.1", "html": "3.2.0", "metadata": "2.0.4"}</td></tr>
+      <tr>
+        <td>Python</td>
+        <td>3.9.0</td></tr></table>
+    <h2>Summary</h2>
+    <p>1 tests ran in 0.47 seconds. </p>
+    <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="passed">1 passed</span>, <input checked="true" class="filter" data-test-result="skipped" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="skipped">0 skipped</span>, <input checked="true" class="filter" data-test-result="failed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="failed">0 failed</span>, <input checked="true" class="filter" data-test-result="error" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="error">0 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filterTable(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>
+    <h2>Results</h2>
+    <table id="results-table">
+      <thead id="results-table-head">
+        <tr>
+          <th class="sortable result initial-sort" col="result">Result</th>
+          <th class="sortable" col="name">Test</th>
+          <th class="sortable" col="duration">Duration</th>
+          <th class="sortable links" col="links">Links</th></tr>
+        <tr hidden="true" id="not-found-message">
+          <th colspan="4">No results found. Try to check the filters</th></tr></thead>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">test/test_api.py::Test_api::test_api[TestCase_1]</td>
+          <td class="col-duration">0.40</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> ------------------------------Captured stdout call------------------------------ <br/>RESPONSE BODY IS :
+{
+    &quot;CategoryId&quot;: 6329,
+    &quot;Name&quot;: &quot;Home &amp; garden&quot;,
+    &quot;Path&quot;: &quot;/Books/Magazines/Home-garden&quot;,
+    &quot;CanListAuctions&quot;: true,
+    &quot;CanListClassifieds&quot;: false,
+    &quot;CanRelist&quot;: true,
+    &quot;DefaultDuration&quot;: 7,
+    &quot;AllowedDurations&quot;: [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        10
+    ],
+    &quot;Fees&quot;: {
+        &quot;Bundle&quot;: 0.95,
+        &quot;EndDate&quot;: 0.25,
+        &quot;Feature&quot;: 0.75,
+        &quot;Gallery&quot;: 0.25,
+        &quot;Reserve&quot;: 0.25,
+        &quot;Subtitle&quot;: 0.15,
+        &quot;TenDays&quot;: 0.25,
+        &quot;Withdrawal&quot;: 3.0,
+        &quot;HighVolume&quot;: 0.1,
+        &quot;MaximumSuccessFee&quot;: 499.0,
+        &quot;SuccessFeeTiers&quot;: [
+            {
+                &quot;MinimumTierPrice&quot;: 0
+            },
+            {
+                &quot;MinimumTierPrice&quot;: 1,
+                &quot;PercentageFee&quot;: 9.9
+            }
+        ],
+        &quot;SecondCategory&quot;: 0.99
+    },
+    &quot;FreePhotoCount&quot;: 20,
+    &quot;MaximumPhotoCount&quot;: 20,
+    &quot;Charities&quot;: [
+        {
+            &quot;CharityType&quot;: 1,
+            &quot;ImageSource&quot;: &quot;https://www.tmsandbox.co.nz/images/sell/charities/SaveTheKiwi-light.png&quot;,
+            &quot;DarkModeImageSource&quot;: &quot;https://www.tmsandbox.co.nz/images/sell/charities/SaveTheKiwi-dark.png&quot;,
+            &quot;Description&quot;: &quot;Save the Kiwi&quot;,
+            &quot;Tagline&quot;: &quot;Protecting kiwi and the places they live.&quot;
+        },
+        {
+            &quot;CharityType&quot;: 2,
+            &quot;ImageSource&quot;: &quot;https://www.tmsandbox.co.nz/images/sell/charities/Plunket-light.png&quot;,
+            &quot;DarkModeImageSource&quot;: &quot;https://www.tmsandbox.co.nz/images/sell/charities/Plunket-dark.png&quot;,
+            &quot;Description&quot;: &quot;Plunket&quot;,
+            &quot;Tagline&quot;: &quot;A major provider of well child health services in NZ.&quot;
+        },
+        {
+            &quot;CharityType&quot;: 3,
+            &quot;ImageSource&quot;: &quot;https://www.tmsandbox.co.nz/images/sell/st_john_logo_light.png&quot;,
+            &quot;DarkModeImageSource&quot;: &quot;https://www.tmsandbox.co.nz/images/sell/st_john_logo_dark.png&quot;,
+            &quot;Description&quot;: &quot;St John&quot;,
+            &quot;Tagline&quot;: &quot;To support St John in the work they do in our community.&quot;
+        },
+        {
+            &quot;CharityType&quot;: 4,
+            &quot;ImageSource&quot;: &quot;https://www.tmsandbox.co.nz/images/sell/chch_foundation_light.png&quot;,
+            &quot;DarkModeImageSource&quot;: &quot;https://www.tmsandbox.co.nz/images/sell/chch_foundation_dark.png&quot;,
+            &quot;Description&quot;: &quot;Our People, Our City Fund&quot;,
+            &quot;Tagline&quot;: &quot;This will be used to support the families and Muslim communities impacted by the tragic events in Christchurch.&quot;
+        }
+    ],
+    &quot;Promotions&quot;: [
+        {
+            &quot;Id&quot;: 1,
+            &quot;Name&quot;: &quot;Basic&quot;,
+            &quot;Description&quot;: &quot;Lowest position in category&quot;,
+            &quot;Price&quot;: 0.0,
+            &quot;MinimumPhotoCount&quot;: 0
+        },
+        {
+            &quot;Id&quot;: 2,
+            &quot;Name&quot;: &quot;Gallery&quot;,
+            &quot;Description&quot;: &quot;Good position in category&quot;,
+            &quot;Price&quot;: 0.25,
+            &quot;OriginalPrice&quot;: 0.25,
+            &quot;MinimumPhotoCount&quot;: 0,
+            &quot;GoodFor2RelistsFee&quot;: 0.15
+        },
+        {
+            &quot;Id&quot;: 3,
+            &quot;Name&quot;: &quot;Feature&quot;,
+            &quot;Description&quot;: &quot;Better position in category&quot;,
+            &quot;Price&quot;: 0.75,
+            &quot;OriginalPrice&quot;: 0.75,
+            &quot;Recommended&quot;: true,
+            &quot;MinimumPhotoCount&quot;: 0,
+            &quot;GoodFor2RelistsFee&quot;: 0.35
+        },
+        {
+            &quot;Id&quot;: 4,
+            &quot;Name&quot;: &quot;Feature Combo&quot;,
+            &quot;Description&quot;: &quot;Best position in category \nIncludes benefits of Feature \nHighlights listing in search results&quot;,
+            &quot;Price&quot;: 0.95,
+            &quot;OriginalPrice&quot;: 0.95,
+            &quot;MinimumPhotoCount&quot;: 0,
+            &quot;GoodFor2RelistsFee&quot;: 0.45
+        }
+    ],
+    &quot;EmbeddedContentOptions&quot;: [],
+    &quot;MaximumTitleLength&quot;: 80,
+    &quot;AreaOfBusiness&quot;: 1,
+    &quot;DefaultRelistDuration&quot;: 7,
+    &quot;CanHaveSecondCategory&quot;: true,
+    &quot;CanBeSecondCategory&quot;: true,
+    &quot;CanUseCounterOffers&quot;: true
+}
+RESPONSE STATUS CODE  IS :
+200
+Validation of specific fields
+FIELD NAME TO CHECK IS : Name
+EXPECTED VALUE IS : Home &amp; garden
+ACTUAL VALUE IS : Home &amp; garden
+Expected Field name and value exist and correct
+FIELD NAME TO CHECK IS : CanRelist
+EXPECTED VALUE IS : True
+ACTUAL VALUE IS : True
+Expected Field name and value exist and correct
+FIELD NAME CONTAINING ARRAY VALUES IS : Promotions
+CHECK IF ARRAY FIELD NAME IS : Name AND ITS VALUE IS : Feature
+ARRAY FIELD NAME TO VALIDATE : Description
+ARRAY FIELD VALUE TO VALIDATE : Better position in category
+Expected Field name and value exist and correct
+<br/> -------------------------------Captured log call-------------------------------- <br/>INFO     Logger:test_api.py:45 RESPONSE BODY IS :
+INFO     Logger:test_api.py:46 {
+    &quot;CategoryId&quot;: 6329,
+    &quot;Name&quot;: &quot;Home &amp; garden&quot;,
+    &quot;Path&quot;: &quot;/Books/Magazines/Home-garden&quot;,
+    &quot;CanListAuctions&quot;: true,
+    &quot;CanListClassifieds&quot;: false,
+    &quot;CanRelist&quot;: true,
+    &quot;DefaultDuration&quot;: 7,
+    &quot;AllowedDurations&quot;: [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        10
+    ],
+    &quot;Fees&quot;: {
+        &quot;Bundle&quot;: 0.95,
+        &quot;EndDate&quot;: 0.25,
+        &quot;Feature&quot;: 0.75,
+        &quot;Gallery&quot;: 0.25,
+        &quot;Reserve&quot;: 0.25,
+        &quot;Subtitle&quot;: 0.15,
+        &quot;TenDays&quot;: 0.25,
+        &quot;Withdrawal&quot;: 3.0,
+        &quot;HighVolume&quot;: 0.1,
+        &quot;MaximumSuccessFee&quot;: 499.0,
+        &quot;SuccessFeeTiers&quot;: [
+            {
+                &quot;MinimumTierPrice&quot;: 0
+            },
+            {
+                &quot;MinimumTierPrice&quot;: 1,
+                &quot;PercentageFee&quot;: 9.9
+            }
+        ],
+        &quot;SecondCategory&quot;: 0.99
+    },
+    &quot;FreePhotoCount&quot;: 20,
+    &quot;MaximumPhotoCount&quot;: 20,
+    &quot;Charities&quot;: [
+        {
+            &quot;CharityType&quot;: 1,
+            &quot;ImageSource&quot;: &quot;https://www.tmsandbox.co.nz/images/sell/charities/SaveTheKiwi-light.png&quot;,
+            &quot;DarkModeImageSource&quot;: &quot;https://www.tmsandbox.co.nz/images/sell/charities/SaveTheKiwi-dark.png&quot;,
+            &quot;Description&quot;: &quot;Save the Kiwi&quot;,
+            &quot;Tagline&quot;: &quot;Protecting kiwi and the places they live.&quot;
+        },
+        {
+            &quot;CharityType&quot;: 2,
+            &quot;ImageSource&quot;: &quot;https://www.tmsandbox.co.nz/images/sell/charities/Plunket-light.png&quot;,
+            &quot;DarkModeImageSource&quot;: &quot;https://www.tmsandbox.co.nz/images/sell/charities/Plunket-dark.png&quot;,
+            &quot;Description&quot;: &quot;Plunket&quot;,
+            &quot;Tagline&quot;: &quot;A major provider of well child health services in NZ.&quot;
+        },
+        {
+            &quot;CharityType&quot;: 3,
+            &quot;ImageSource&quot;: &quot;https://www.tmsandbox.co.nz/images/sell/st_john_logo_light.png&quot;,
+            &quot;DarkModeImageSource&quot;: &quot;https://www.tmsandbox.co.nz/images/sell/st_john_logo_dark.png&quot;,
+            &quot;Description&quot;: &quot;St John&quot;,
+            &quot;Tagline&quot;: &quot;To support St John in the work they do in our community.&quot;
+        },
+        {
+            &quot;CharityType&quot;: 4,
+            &quot;ImageSource&quot;: &quot;https://www.tmsandbox.co.nz/images/sell/chch_foundation_light.png&quot;,
+            &quot;DarkModeImageSource&quot;: &quot;https://www.tmsandbox.co.nz/images/sell/chch_foundation_dark.png&quot;,
+            &quot;Description&quot;: &quot;Our People, Our City Fund&quot;,
+            &quot;Tagline&quot;: &quot;This will be used to support the families and Muslim communities impacted by the tragic events in Christchurch.&quot;
+        }
+    ],
+    &quot;Promotions&quot;: [
+        {
+            &quot;Id&quot;: 1,
+            &quot;Name&quot;: &quot;Basic&quot;,
+            &quot;Description&quot;: &quot;Lowest position in category&quot;,
+            &quot;Price&quot;: 0.0,
+            &quot;MinimumPhotoCount&quot;: 0
+        },
+        {
+            &quot;Id&quot;: 2,
+            &quot;Name&quot;: &quot;Gallery&quot;,
+            &quot;Description&quot;: &quot;Good position in category&quot;,
+            &quot;Price&quot;: 0.25,
+            &quot;OriginalPrice&quot;: 0.25,
+            &quot;MinimumPhotoCount&quot;: 0,
+            &quot;GoodFor2RelistsFee&quot;: 0.15
+        },
+        {
+            &quot;Id&quot;: 3,
+            &quot;Name&quot;: &quot;Feature&quot;,
+            &quot;Description&quot;: &quot;Better position in category&quot;,
+            &quot;Price&quot;: 0.75,
+            &quot;OriginalPrice&quot;: 0.75,
+            &quot;Recommended&quot;: true,
+            &quot;MinimumPhotoCount&quot;: 0,
+            &quot;GoodFor2RelistsFee&quot;: 0.35
+        },
+        {
+            &quot;Id&quot;: 4,
+            &quot;Name&quot;: &quot;Feature Combo&quot;,
+            &quot;Description&quot;: &quot;Best position in category \nIncludes benefits of Feature \nHighlights listing in search results&quot;,
+            &quot;Price&quot;: 0.95,
+            &quot;OriginalPrice&quot;: 0.95,
+            &quot;MinimumPhotoCount&quot;: 0,
+            &quot;GoodFor2RelistsFee&quot;: 0.45
+        }
+    ],
+    &quot;EmbeddedContentOptions&quot;: [],
+    &quot;MaximumTitleLength&quot;: 80,
+    &quot;AreaOfBusiness&quot;: 1,
+    &quot;DefaultRelistDuration&quot;: 7,
+    &quot;CanHaveSecondCategory&quot;: true,
+    &quot;CanBeSecondCategory&quot;: true,
+    &quot;CanUseCounterOffers&quot;: true
+}
+INFO     Logger:test_api.py:51 RESPONSE STATUS CODE IS : 
+INFO     Logger:test_api.py:52 200
+INFO     Logger:test_api.py:59 Validation of specific fields
+INFO     Logger:test_api.py:62 Expected Field name and value exist and correct
+INFO     Logger:test_api.py:69 Expected Field name and value exist and correct
+INFO     Logger:test_api.py:76 Expected Field name and value exist and correct<br/></div></td></tr></tbody></table></body></html>
