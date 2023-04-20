@@ -16,7 +16,7 @@ This project is a simple API test automation using Python, pytest, and Allure re
 
 
 
-# Allure HTML Report Sample Looger
+# Allure HTML Report Sample Logger
 <img src="https://github.com/leonelcalderontest/test_api/blob/main/screenshot_test_body_result_3.PNG" alt="Sample Logs on HTML Report">
 
 
